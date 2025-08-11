@@ -1,0 +1,25 @@
+# Python / general
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+*.egg
+.env
+.venv/
+venv/
+.env.*
+.DS_Store
+
+# VSCode / IDE
+.vscode/
+.idea/
+
+# Project outputs
+horarios_escolares_matricial.xlsx
+horarios_escolares_matricial.pdf
+data/ui_config.json
+data/professores.csv
+
+# Private module (não publicar)
+GradeHorario.py
