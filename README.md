@@ -38,7 +38,7 @@ Transformar disponibilidades pontuais (por professor e matéria) em uma grade se
   - *Nome do Professor* e *Matéria* (validação de campos).
   - *Ano da turma* (spin) e *Quantidade de turmas* (spin).
   - **Pré-visualização dinâmica** das turmas (badges: `1A, 1B, …`).
-- **Seleção de disponibilidade** por *dia × horário* usando “**chips**” clicáveis (substituem checkboxes).
+- **Seleção de disponibilidade** por *dia x horário* usando “**chips**” clicáveis (substituem checkboxes).
 - **Persistência idempotente**: ao salvar, a disponibilidade de `(Professor, Matéria)` é substituída pela seleção atual (evita duplicatas antigas).
 - **Geração da grade** com confirmação em *messagebox* e **paths absolutos** de saída.
 - **Limpar Base** com confirmação (zera `data/professores.csv` e reseta UI).
@@ -62,44 +62,57 @@ Transformar disponibilidades pontuais (por professor e matéria) em uma grade se
 
 ---
 
-## 📐 Modelagem Teórica (resumo matemático)
+## 📐 Modelagem Teórica (resumo matemático, sem LaTeX)
 
-Considere:
-- Conjuntos: dias **D** (6), horários **H** (5), turmas **T**, professores **P** e pares **K ⊆ P × M** (professor–matéria).
-- Para cada par \(k ∈ K\), há um conjunto de disponibilidades \(A_k ⊆ D × H\).
+**Conjuntos**
+- `D` = dias (6)
+- `H` = horários (5)
+- `T` = turmas
+- `P` = professores
+- `K ⊆ P x M` = pares (professor, matéria)
+
+Para cada `k ∈ K`, existe um conjunto de disponibilidades `A_k ⊆ D x H`.
 
 **Variável binária**
-- \(x_{{k,t,d,h}} = 1\) se \(k\) leciona a turma \(t\) no slot \((d,h)\), caso contrário 0.
+- `x[k,t,d,h] ∈ {0,1}`: vale 1 se o par `k` leciona a turma `t` no slot `(d,h)`.
 
-**Restrições** (implementadas/validadas):
-1. **Disponibilidade**: \(x_{{k,t,d,h}} = 0\) se \((d,h) \not\in A_k\).
-2. **Professor único por slot**: \(\sum_{t} \sum_{k: prof(k)=p} x_{{k,t,d,h}} ≤ 1\) para todo professor \(p\) e todo \((d,h)\).
-3. **Capacidade turma/slot**: \(\sum_{k} x_{{k,t,d,h}} ≤ 1\) para toda turma \(t\) e todo \((d,h)\).
+**Restrições (implementadas/validadas)**
+1. **Disponibilidade**  
+   `x[k,t,d,h] = 0` se `(d,h) ∉ A_k`.
+2. **Professor único por slot**  
+   Para todo professor `p` e todo `(d,h)`:
+   `sum_t sum_{k: prof(k)=p} x[k,t,d,h] <= 1`.
+3. **Capacidade por turma/slot**  
+   Para toda turma `t` e todo `(d,h)`:
+   `sum_k x[k,t,d,h] <= 1`.
 
-**Objetivo implícito**: **maximizar** o preenchimento \(\sum x_{{k,t,d,h}}\).  
-Com essas restrições, o problema **decompõe por slot** \((d,h)\): para cada horário do dia, trata-se de um **emparelhamento bipartido** entre *turmas* e *professores disponíveis*.
+**Objetivo implícito**  
+Maximizar o preenchimento total: `sum_{k,t,d,h} x[k,t,d,h]`.
+
+**Observação**  
+Com essas restrições, o problema decompõe por slot `(d,h)`. Em cada `(d,h)`, resolve-se um **emparelhamento bipartido** entre `turmas` e `professores disponíveis`.
 
 **Limite superior de preenchimento**
-Para cada \((d,h)\): no máximo \(\min\{{T, |P_{{d,h}}|}}\) alocações, em que \(P_{{d,h}}\) é o conjunto de professores disponíveis no slot.  
-A taxa máxima global é:
-\[
-\text{{fill\_max}} \le \frac{\sum_{d,h} \min(T, |P_{{d,h}}|)}{|D|\cdot|H|\cdot T}.
-\]
+- Em cada `(d,h)`, no máximo `min(T, |P_dh|)` alocações, onde `P_dh` é o conjunto de professores disponíveis no slot.
+- Taxa máxima global:
+  ```
+  fill_max <= ( sum_{d,h} min(T, |P_dh|) ) / ( |D| * |H| * T )
+  ```
 
 ---
 
 ## ⚙️ Algoritmo de Alocação (implementado)
 
-- **Entrada**: disponibilidades por `(Professor, Matéria)` → lista de slots \((d,h)\).
-- **Processo** (*greedy* com aleatoriedade controlada):
+- **Entrada**: disponibilidades por `(Professor, Matéria)` → lista de slots `(d,h)`.
+- **Processo** (greedy com aleatoriedade controlada):
   1. Embaralha os pares `(prof, mat)` com RNG (semente 42).
-  2. Percorre os slots disponíveis desse par; em cada slot, escolhe **qualquer turma vaga** naquele \((d,h)\) e aloca, desde que o professor ainda não esteja ocupando aquele slot.
-  3. Continua até varrer todos os pares/slots.
-- **Validação** (pós-alocação):
+  2. Para cada slot disponível do par, se existir turma vaga naquele `(d,h)` e o professor não estiver ocupado no mesmo `(d,h)`, aloca.
+  3. Prossegue até varrer todos os pares/slots.
+- **Validação**:
   - Somente horários disponíveis foram usados.
-  - Nenhum professor aparece duas vezes no mesmo \((d,h)\).
+  - Nenhum professor aparece duas vezes no mesmo `(d,h)`.
 
-**Complexidade**: aproximadamente \(O(A\cdot T)\), onde \(A\) é o nº total de marcações de disponibilidade; adequado para dezenas de turmas.
+**Complexidade aproximada**: `O(A * T)`, onde `A` é o total de marcações de disponibilidade.
 
 ---
 
@@ -107,9 +120,9 @@ A taxa máxima global é:
 
 - **Excel**: uma planilha por dia; linhas = **turmas**, colunas = **faixas horárias**; células do tipo `"Matéria (Professor)"` ou vazio.
 - **PDF**:
-  - Capa + páginas por dia (tabela com turmas × horários).
+  - Capa + páginas por dia (tabela com turmas x horários).
   - **Legenda** final com mapeamento **Professor → Matérias**.
-  - Ajustes de largura/cortes de texto para manter legibilidade.
+  - Ajustes de largura/cortes de texto para legibilidade.
 
 ---
 
@@ -136,17 +149,15 @@ A taxa máxima global é:
 
 ## ▶️ Como Executar (local)
 
-1. **Instale dependências**  
+1. **Instale dependências**
    ```bash
    pip install pandas numpy fpdf
    ```
-
-2. **Execute a interface**  
+2. **Execute a interface**
    ```bash
    python gui_professor_fullscreen.py
    ```
-
-3. **Fluxo**  
+3. **Fluxo**
    - Preencha *Professor* e *Matéria* → marque disponibilidades → **Salvar**.  
    - Ajuste **Ano** e **Quantidade de turmas** (pré-visualização aparece em “Turmas”).  
    - Clique **Gerar Grade (Excel + PDF)** para produzir os arquivos finais.  
