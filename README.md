@@ -1,143 +1,151 @@
-# TurmaGrid — Cadastro de Disponibilidade & Geração de Grade (GUI + Engine)
+<!-- HERO BANNER -->
+<p align="center">
+  <img src="assets/banners/turmagrid-hero.png" alt="TurmaGrid — Cadastro de Disponibilidade & Geração de Grade" width="100%" />
+</p>
 
-Sistema completo para **cadastrar disponibilidades de professores** e **gerar automaticamente** uma **grade escolar** em **Excel** e **PDF**. 
-A aplicação combina uma interface moderna em **Tkinter/ttk** com um mecanismo de alocação reproduzível (semente fixa) e validação de regras.
-  
-> **Stack**: Python 3.x • Tkinter/ttk • pandas • NumPy • fpdf • Pathlib • JSON
+<h1 align="center">TurmaGrid — Cadastro de Disponibilidade & Geração de Grade (GUI + Engine)</h1>
+
+<p align="center">
+  Sistema completo para <b>cadastrar disponibilidades de professores</b> e <b>gerar automaticamente</b> uma <b>grade escolar</b> em <b>Excel</b> e <b>PDF</b>.
+</p>
+
+<p align="center">
+  <a href="#"><img alt="Python" src="https://img.shields.io/badge/Python-3.10%2B-3776AB?logo=python&logoColor=white"></a>
+  <a href="#"><img alt="Toolkit" src="https://img.shields.io/badge/Tkinter%2Fttk-GUI-FFB000"></a>
+  <a href="#"><img alt="Pandas" src="https://img.shields.io/badge/pandas-data-150458?logo=pandas&logoColor=white"></a>
+  <a href="#"><img alt="NumPy" src="https://img.shields.io/badge/numpy-math-013243?logo=numpy&logoColor=white"></a>
+  <a href="#"><img alt="PDF" src="https://img.shields.io/badge/fpdf-export-2C3E50"></a>
+  <a href="#"><img alt="License" src="https://img.shields.io/badge/license-educacional-informational"></a>
+</p>
+
+<p align="center">
+  <b>Stack:</b> Python • Tkinter/ttk • pandas • NumPy • fpdf • Pathlib • JSON
+</p>
+
+---
+
+## 🔎 Motivação
+
+Este projeto nasceu a partir de uma das aulas do **Museu da Matemática – Prandiano**, como um estudo aplicado de **otimização prática** para escolas.  
+A ideia foi transformar um problema recorrente — conciliar **disponibilidades docentes** e **restrições de grade** — em uma solução **reprodutível**, **visual** e **simples de operar** por equipes pedagógicas.
+
+> Objetivo didático: exercitar modelagem de restrições, estruturação de dados e construção de uma GUI funcional que sirva de ponte entre teoria e operação.
 
 ---
 
 ## 🎯 Objetivo
 
-Transformar disponibilidades pontuais (por professor e matéria) em uma grade semanal coerente, visualmente organizada e pronta para distribuição.
+Converter disponibilidades pontuais (por professor e matéria) em uma **grade semanal coerente**, **validada por regras**, e pronta para distribuição (**Excel + PDF**).
+
+---
+
+## ✨ Destaques
+
+- 🎛️ **GUI moderna** em Tkinter/ttk (tema escuro, chips de seleção por dia/horário, preview de turmas).  
+- 🧠 **Engine reprodutível** (RNG com `seed=42`) e **validações** de conflitos.  
+- 📦 **Exportação profissional**: planilha por dia no Excel + PDF com capa, legendas e páginas por dia.  
+- 🧰 **Operação idempotente**: a base por `(Professor, Matéria)` é sempre substituída para evitar duplicatas.  
+- 🔒 **Separação de responsabilidades** (GUI ↔ Engine) e arquivos de dados versionados com cuidado.
 
 ---
 
 ## 🧭 Arquitetura & Fluxo de Dados
 
 - **GUI (`gui_professor_fullscreen.py`)**
-  - Grava a base `data/professores.csv` com colunas: **Professor, Materia, Dia, Horario**.
-  - Persiste parâmetros de geração em `data/ui_config.json` (**ano**, **quantidade de turmas** e **rótulos**).
-- **Engine (`GradeHorario`)**
-  - Lê o CSV + parâmetros, **monta a grade** e exporta:
-    - `horarios_escolares_matricial.xlsx`
-    - `horarios_escolares_matricial.pdf`
-- **Reprodutibilidade**: usa `seed=42` para resultados consistentes entre execuções.
+  - Grava `data/professores.csv` com: **Professor, Materia, Dia, Horario**  
+  - Persiste parâmetros em `data/ui_config.json` (**ano**, **qtd de turmas**, **rótulos**)
 
-**Convenções do sistema**
-- Dias: `Segunda-feira` … `Sábado`
-- Faixas horárias (exemplo padrão): `12h-13h` … `16h-17h`
-- Rótulos de turma: `1A, 1B, …, 1Z, 1AA, 1AB, …` (gerados a partir de **ano** e **qtd**).
+- **Engine (`GradeHorario`)**
+  - Lê CSV + parâmetros, gera e exporta:  
+    - `horarios_escolares_matricial.xlsx`  
+    - `horarios_escolares_matricial.pdf`
+
+- **Regras de nomenclatura**
+  - Dias: `Segunda-feira` … `Sábado`  
+  - Horários (padrão): `12h-13h` … `16h-17h`  
+  - Turmas: `1A, 1B, …, 1Z, 1AA, 1AB, …`
+
+> **Reprodutibilidade:** resultados consistentes entre execuções com `seed=42`.
 
 ---
 
-## 🖥️ Funcionalidades da Interface Gráfica
+## 🖥️ Interface Gráfica
 
-- **Tema escuro moderno** com componentes `ttk` customizados.
-- **Formulário** com:
-  - *Nome do Professor* e *Matéria* (validação de campos).
-  - *Ano da turma* (spin) e *Quantidade de turmas* (spin).
-  - **Pré-visualização dinâmica** das turmas (badges: `1A, 1B, …`).
-- **Seleção de disponibilidade** por *dia x horário* usando “**chips**” clicáveis (substituem checkboxes).
-- **Persistência idempotente**: ao salvar, a disponibilidade de `(Professor, Matéria)` é substituída pela seleção atual (evita duplicatas antigas).
-- **Geração da grade** com confirmação em *messagebox* e **paths absolutos** de saída.
-- **Limpar Base** com confirmação (zera `data/professores.csv` e reseta UI).
-- **Full-screen / zoom** automático (Windows/Linux/macOS).
+- **Tema escuro** com componentes `ttk` customizados  
+- **Formulário**: Professor, Matéria, Ano (spin), Quantidade (spin)  
+- **Preview de turmas** em tempo real (`1A, 1B, …`)  
+- **Chips clicáveis** (dia × horário) substituem checkboxes  
+- **Geração** com confirmação e exibição de **paths absolutos**  
+- **Limpar Base** zera `data/professores.csv` com confirmação  
+- **Full-screen/zoom** automático (Windows/Linux/macOS)
 
 ---
 
 ## 📸 Capturas de Tela
 
-### 1) Tela de Menu (GUI principal)
-![Tela de menu](assets/screens/menu.png)
-
-### 2) Geração dos Arquivos (confirmação)
-![Geração dos arquivos](assets/screens/geracao_arquivos.png)
-
-### 3) Limpar Base (confirmação)
-![Limpar base](assets/screens/limpar_base.png)
-
-### 4) Resultado no PDF (exemplo de dia)
-![Resultado do PDF](assets/screens/resultado_pdf.png)
+<p align="center">
+  <img src="assets/screens/menu.png" alt="Tela de menu" width="48%"/>
+  <img src="assets/screens/geracao_arquivos.png" alt="Confirmação de geração" width="48%"/>
+</p>
+<p align="center">
+  <img src="assets/screens/limpar_base.png" alt="Confirmação de limpar base" width="48%"/>
+  <img src="assets/screens/resultado_pdf.png" alt="Exemplo de página do PDF" width="48%"/>
+</p>
 
 ---
 
-## 📐 Modelagem Teórica (resumo matemático, sem LaTeX)
+## 📐 Modelagem (resumo prático)
 
-**Conjuntos**
-- `D` = dias (6)
-- `H` = horários (5)
-- `T` = turmas
-- `P` = professores
-- `K ⊆ P x M` = pares (professor, matéria)
+- Conjuntos:  
+  `D` (dias), `H` (horários), `T` (turmas), `P` (professores), `K ⊆ P×M` (pares prof/mat), disponibilidade `A_k ⊆ D×H`.
 
-Para cada `k ∈ K`, existe um conjunto de disponibilidades `A_k ⊆ D x H`.
+- Variável binária:  
+  `x[k,t,d,h] ∈ {0,1}` indica alocação de `k` para turma `t` no slot `(d,h)`.
 
-**Variável binária**
-- `x[k,t,d,h] ∈ {0,1}`: vale 1 se o par `k` leciona a turma `t` no slot `(d,h)`.
+- Restrições:
+  1) disponibilidade; 2) professor único por slot; 3) uma matéria por turma/slot.
 
-**Restrições (implementadas/validadas)**
-1. **Disponibilidade**  
-   `x[k,t,d,h] = 0` se `(d,h) ∉ A_k`.
-2. **Professor único por slot**  
-   Para todo professor `p` e todo `(d,h)`:
-   `sum_t sum_{k: prof(k)=p} x[k,t,d,h] <= 1`.
-3. **Capacidade por turma/slot**  
-   Para toda turma `t` e todo `(d,h)`:
-   `sum_k x[k,t,d,h] <= 1`.
-
-**Objetivo implícito**  
-Maximizar o preenchimento total: `sum_{k,t,d,h} x[k,t,d,h]`.
-
-**Observação**  
-Com essas restrições, o problema decompõe por slot `(d,h)`. Em cada `(d,h)`, resolve-se um **emparelhamento bipartido** entre `turmas` e `professores disponíveis`.
-
-**Limite superior de preenchimento**
-- Em cada `(d,h)`, no máximo `min(T, |P_dh|)` alocações, onde `P_dh` é o conjunto de professores disponíveis no slot.
-- Taxa máxima global:
-  ```
-  fill_max <= ( sum_{d,h} min(T, |P_dh|) ) / ( |D| * |H| * T )
-  ```
+- Objetivo (implícito): **maximizar preenchimento**.  
+  Problema se decompõe por `(d,h)` como **emparelhamento bipartido** entre turmas e professores disponíveis.
 
 ---
 
-## ⚙️ Algoritmo de Alocação (implementado)
+## ⚙️ Algoritmo (implementado)
 
-- **Entrada**: disponibilidades por `(Professor, Matéria)` → lista de slots `(d,h)`.
-- **Processo** (greedy com aleatoriedade controlada):
-  1. Embaralha os pares `(prof, mat)` com RNG (semente 42).
-  2. Para cada slot disponível do par, se existir turma vaga naquele `(d,h)` e o professor não estiver ocupado no mesmo `(d,h)`, aloca.
-  3. Prossegue até varrer todos os pares/slots.
-- **Validação**:
-  - Somente horários disponíveis foram usados.
-  - Nenhum professor aparece duas vezes no mesmo `(d,h)`.
+1. Embaralha `(prof, mat)` com RNG (seed 42)  
+2. Varre slots disponíveis e aloca se:
+   - turma livre no `(d,h)`  
+   - professor não ocupado no mesmo `(d,h)`
+3. Validações finais:
+   - usa apenas horários disponíveis  
+   - sem professor duplicado no mesmo slot
 
-**Complexidade aproximada**: `O(A * T)`, onde `A` é o total de marcações de disponibilidade.
+**Complexidade:** ~`O(A * T)` (A = total de marcações de disponibilidade)
 
 ---
 
 ## 🧾 Exportação (Excel + PDF)
 
-- **Excel**: uma planilha por dia; linhas = **turmas**, colunas = **faixas horárias**; células do tipo `"Matéria (Professor)"` ou vazio.
-- **PDF**:
-  - Capa + páginas por dia (tabela com turmas x horários).
-  - **Legenda** final com mapeamento **Professor → Matérias**.
-  - Ajustes de largura/cortes de texto para legibilidade.
+- **Excel**: 1 planilha por dia; linhas = turmas, colunas = horários;  
+  células: `"Matéria (Professor)"` ou vazio.
+- **PDF**: capa → páginas por dia → legenda (Professor → Matérias), com cortes inteligentes de texto.
 
 ---
 
-## 🔧 Estrutura de Pastas
+## 🗂️ Estrutura de Pastas
 
 ```
 .
 ├─ gui_professor_fullscreen.py
-├─ GradeHorario.py              # (arquivo privado — ver .gitignore abaixo)
+├─ GradeHorario.py              # (arquivo privado — ver .gitignore)
 ├─ data/
-│  ├─ professores.csv           # base gravada pela GUI
-│  └─ ui_config.json            # parâmetros vindo da GUI
+│  ├─ professores.csv           # gravado pela GUI
+│  └─ ui_config.json            # parâmetros da GUI
 ├─ horarios_escolares_matricial.xlsx
 ├─ horarios_escolares_matricial.pdf
 └─ assets/
+   ├─ banners/
+   │  └─ turmagrid-hero.png     # banner do topo (1920x500 recomendado)
    └─ screens/
       ├─ menu.png
       ├─ geracao_arquivos.png
@@ -145,32 +153,45 @@ Com essas restrições, o problema decompõe por slot `(d,h)`. Em cada `(d,h)`, 
       └─ resultado_pdf.png
 ```
 
+> Dica de `.gitignore`: manter `GradeHorario.py` e/ou arquivos sensíveis fora do repositório público, conforme sua política.
+
 ---
 
 ## ▶️ Como Executar (local)
 
-1. **Instale dependências**
-   ```bash
-   pip install pandas numpy fpdf
-   ```
-2. **Execute a interface**
-   ```bash
-   python gui_professor_fullscreen.py
-   ```
-3. **Fluxo**
-   - Preencha *Professor* e *Matéria* → marque disponibilidades → **Salvar**.  
-   - Ajuste **Ano** e **Quantidade de turmas** (pré-visualização aparece em “Turmas”).  
-   - Clique **Gerar Grade (Excel + PDF)** para produzir os arquivos finais.  
-   - **Limpar Base** para zerar `data/professores.csv` (confirmação mostrada).
+```bash
+pip install pandas numpy fpdf
+python gui_professor_fullscreen.py
+```
+
+**Fluxo:**  
+Preencha *Professor* e *Matéria* → marque disponibilidades → **Salvar** → ajuste **Ano** e **Quantidade** → **Gerar Grade (Excel + PDF)** → confira os arquivos e a legenda.
 
 ---
 
-## ✅ Regras de negócio atendidas
+## ✅ Regras de Negócio
 
-- Professor **não** é alocado em **dois horários simultâneos**.
-- Somente slots efetivamente **marcados como disponíveis** são usados.
-- Se **faltarem professores** em um slot, a célula **permanece vazia**.
-- Geração reproduzível (RNG com semente fixa).
+- Nunca aloca um professor em **dois horários simultâneos**  
+- Usa apenas **slots marcados como disponíveis**  
+- Se faltar professor, a célula **fica vazia**  
+- **Resultados reprodutíveis** (seed fixa)
+
+---
+
+## 🛣️ Roadmap
+
+- [ ] Carga horária alvo por matéria/turma  
+- [ ] Balanceamento de aulas por professor  
+- [ ] Exportação para Google Sheets/CSV adicional  
+- [ ] Modo CLI e empacotamento (`pipx`)  
+- [ ] Testes automatizados (pytest) e validações extras
+
+---
+
+## 🙌 Agradecimentos
+
+Projeto didático inspirado e desenvolvido a partir de uma das aulas do **Museu da Matemática – Prandiano**.  
+Agradeço pela proposta pedagógica que incentivou aplicar modelagem e programação a um problema real de gestão escolar.
 
 ---
 
@@ -179,8 +200,10 @@ Com essas restrições, o problema decompõe por slot `(d,h)`. Em cada `(d,h)`, 
 **Miguel Gengo** — Engenheiro da Computação  
 [LinkedIn](https://www.linkedin.com/in/miguel-gengo-8157b72a1)
 
---- 
+> Se este projeto te ajudou, considere **deixar uma ⭐** e abrir um **Issue** com feedback/ideias.
+
+---
 
 ## 📄 Licença
 
-Projeto acadêmico/demonstrativo. Adapte conforme sua política interna.
+Uso **educacional/demonstrativo**. Adapte para sua realidade institucional antes de uso em produção.
