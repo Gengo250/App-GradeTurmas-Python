@@ -57,7 +57,6 @@ Converter disponibilidades pontuais (por professor e matéria) em uma **grade se
 - **Resultados reprodutíveis** (seed fixa)
 
 ---
----
 
 ## 🧭 Arquitetura & Fluxo de Dados
 
