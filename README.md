@@ -49,6 +49,16 @@ Converter disponibilidades pontuais (por professor e matéria) em uma **grade se
 
 ---
 
+## ✅ Regras de Negócio
+
+- Nunca aloca um professor em **dois horários simultâneos**  
+- Usa apenas **slots marcados como disponíveis**  
+- Se faltar professor, a célula **fica vazia**  
+- **Resultados reprodutíveis** (seed fixa)
+
+---
+---
+
 ## 🧭 Arquitetura & Fluxo de Dados
 
 - **GUI (`gui_professor_fullscreen.py`)**
@@ -168,14 +178,6 @@ Preencha *Professor* e *Matéria* → marque disponibilidades → **Salvar** →
 
 ---
 
-## ✅ Regras de Negócio
-
-- Nunca aloca um professor em **dois horários simultâneos**  
-- Usa apenas **slots marcados como disponíveis**  
-- Se faltar professor, a célula **fica vazia**  
-- **Resultados reprodutíveis** (seed fixa)
-
----
 
 ## 🛣️ Roadmap
 
