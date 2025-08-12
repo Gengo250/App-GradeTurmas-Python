@@ -153,7 +153,6 @@ Converter disponibilidades pontuais (por professor e matéria) em uma **grade se
       └─ resultado_pdf.png
 ```
 
-> Dica de `.gitignore`: manter `GradeHorario.py` e/ou arquivos sensíveis fora do repositório público, conforme sua política.
 
 ---
 
