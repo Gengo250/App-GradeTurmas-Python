@@ -90,7 +90,7 @@ Converter disponibilidades pontuais (por professor e matéria) em uma **grade se
 
 ---
 
-## 📸 Capturas de Tela
+## 📸 Preview App
 
 <p align="center">
   <img src="assets/screens/menu.png" alt="Tela de menu" width="48%"/>
