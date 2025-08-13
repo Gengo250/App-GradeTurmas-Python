@@ -29,8 +29,6 @@
 Este projeto nasceu a partir de uma das aulas do **Museu da Matemática – Prandiano**, como um estudo aplicado de **otimização prática** para escolas.  
 A ideia foi transformar um problema recorrente — conciliar **disponibilidades docentes** e **restrições de grade** — em uma solução **reprodutível**, **visual** e **simples de operar** por equipes pedagógicas.
 
-> Objetivo didático: exercitar modelagem de restrições, estruturação de dados e construção de uma GUI funcional que sirva de ponte entre teoria e operação.
-
 ---
 
 ## 🎯 Objetivo
